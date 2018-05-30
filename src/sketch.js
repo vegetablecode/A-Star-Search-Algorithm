@@ -1,3 +1,9 @@
+// simulation speed
+var lastLoop = new Date;
+var count = 0;
+var i = 0;
+
+
 function removeFromArray(arr, elt) {
   for(var i=arr.length-1; i>=0; i--) {
     if(arr[i] == elt) {
@@ -56,23 +62,43 @@ function Spot(i, j) {
   this.addNeighbours = function(grid) {
     var i = this.i;
     var j = this.j;
-    if(i<cols-1) {
-      this.neighbours.push(grid[i+1][j]);
+    // top-right
+    if((i<cols-1)&&(j>1)) {
+      this.neighbours.push(grid[i+1][j-2]);
     }
-    if(i>0) {
-        this.neighbours.push(grid[i-1][j]);
+    if((i<cols-2)&&(j>0)) {
+      this.neighbours.push(grid[i+2][j-1]);
     }
-    if(j<rows-1) {
-      this.neighbours.push(grid[i][j+1]);
+
+    // top-left
+    if((i>0)&&(j>1)) {
+      this.neighbours.push(grid[i-1][j-2]);
     }
-    if(j>0) {
-      this.neighbours.push(grid[i][j-1]);
+    if((i>1)&&(j>0)) {
+      this.neighbours.push(grid[i-2][j-1]);
+    }
+
+    // bottom-right
+    if((i<cols-1)&&(j<rows-2)) {
+      this.neighbours.push(grid[i+1][j+2]);
+    }
+    if((i<cols-2)&&(j<rows-1)) {
+      this.neighbours.push(grid[i+2][j+1]);
+    }
+
+    // bottom-left
+    if((i>0)&&(j<rows-2)) {
+      this.neighbours.push(grid[i-1][j+2]);
+    }
+    if((i>1)&&(j<rows-1)) {
+      this.neighbours.push(grid[i-2][j+1]);
     }
   }
 
 }
 
 function setup() {
+  frameRate(2);
   createCanvas(400, 400);
   console.log('A*');
 
@@ -98,6 +124,7 @@ function setup() {
   }
 
   start = grid[0][0];
+  //end = grid [15][7];
   end = grid[cols-1][rows-1];
 
   openSet.push(start);
@@ -105,6 +132,14 @@ function setup() {
 }
 
 function draw() {
+
+  // simulation speed
+  var thisLoop = new Date;
+  var fps = 1000/(thisLoop - lastLoop);
+  lastLoop = thisLoop;
+  ++i;
+  count+=fps;
+  // ----------------------
 
   if(openSet.length>0) {
     // find the lowest "winner"
