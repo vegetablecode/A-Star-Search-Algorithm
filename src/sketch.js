@@ -18,8 +18,8 @@ function heuristic(a, b) {
   return d;
 }
 
-var cols = 25;
-var rows = 25;
+var cols = 15;
+var rows = 15;
 var grid = new Array(cols);
 
 // the set of evaluated nodes
@@ -48,10 +48,20 @@ function Spot(i, j) {
   this.neighbours = [];
   this.previous = undefined;
 
+  // walls
+  this.wall = false;
+
+  if(random(1) < 0.1) {
+    this.wall = true;
+  }
+
   // show a spot
   this.show = function(col) {
     // color setup
     fill(col);
+    if (this.wall) {
+      fill(0);
+    }
     noStroke();
 
     // draw rectangle
@@ -98,7 +108,7 @@ function Spot(i, j) {
 }
 
 function setup() {
-  frameRate(2);
+  frameRate(1);
   createCanvas(400, 400);
   console.log('A*');
 
@@ -165,7 +175,7 @@ function draw() {
     for(var i=0; i<neighbours.length; i++) {
       var neighbour = neighbours[i];
 
-      if(!closedSet.includes(neighbour)) {
+      if(!closedSet.includes(neighbour) && !neighbour.wall) {
         var tempG = current.g + 1;
 
         if(openSet.includes(neighbour)) {
