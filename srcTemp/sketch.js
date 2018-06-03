@@ -3,18 +3,44 @@ var lastLoop = new Date;
 var count = 0;
 var i = 0;
 
+
 var cols = 15;
 var rows = 15;
 var grid = new Array(cols);
 
-
-var start;
-var end;
 var w, h;
 var path = [];
 
+function loadGame(rows, cols) {
+  mapGraphic = null;
+  gamemap = new MapFactory().getMap(cols, rows, 10, 10, 410, 410, 0, 0.1);
+  start = gamemap.grid[0][0];
+  end = gamemap.grid[cols - 1][rows - 1];
+  start.wall = false;
+  end.wall = false
+  pathfinder = new AStart(gamemap, start, end);
+}
 
+function searchStep() {
+  var result = pathfinder.step();
+}
 
+var mapGraphic = null;
+
+function drawMap() {
+  if(mapGraphic == null) {
+    for(var i=0; i<gamemap.cols; i++) {
+      for(var j=0; j<gamemap.rows; j++) {
+        if(gamemap.grid[i][j].wall) {
+          gamemap.grid[i][j].show(color(255));
+        }
+      }
+    }
+    mapGraphic = get(gamemap.x, gamemap.y, gamemap.w, gamemap.h);
+  }
+
+  image(mapGraphic, gamemap.x, gamemam.y);
+}
 
 function setup() {
   frameRate(1);
@@ -24,6 +50,8 @@ function setup() {
   w = width/cols;
   h = height/rows;
 
+  loadGame(cols, rows);
+
   // create a 2D array
   for(var i=0; i<cols; i++) {
     grid[i] = new Array(rows);
@@ -32,7 +60,7 @@ function setup() {
   // for each element create a spot
   for(var i=0; i<cols; i++) {
     for(var j=0; j<rows; j++) {
-      grid[i][j] = new Spot(i, j, w, h, grid);
+      grid[i][j] = new Spot(i, j);
     }
   }
 
@@ -46,23 +74,6 @@ function setup() {
   //end = grid [15][7];
   end = grid[cols-1][rows-1];
 
-  pathfinder = new AStarAlgorithm(start, end);
-  var openSet = pathfinder.openSet;
-  var closedSet = pathfinder.closedSet;
-  var current = pathfinder.current;
-
-}
-
-function calcPath(endNode) {
-    // Find the path by working backwards
-    path = [];
-    var temp = endNode;
-    path.push(temp);
-    while (temp.previous) {
-        path.push(temp.previous);
-        temp = temp.previous;
-    }
-    return path
 }
 
 function draw() {
@@ -75,7 +86,8 @@ function draw() {
   count+=fps;
   // ----------------------
 
-  pathfinder.step();
+  searchStep();
+  drawMap();
 
   background(0);
 
@@ -88,16 +100,21 @@ function draw() {
   // discovered nodes -> green
   // evaluated nodes -> red
   // path -> blue
-  for(var i=0; i<pathfinder.closedSet.length; i++) {
-    pathfinder.closedSet[i].show(color(255, 0, 0));
+  for(var i=0; i<closedSet.length; i++) {
+    closedSet[i].show(color(255, 0, 0));
   }
 
   // find the path
-  var path = calcPath(pathfinder.lastCheckedNode);
+  path = [];
+  var temp = current;
+  path.push(temp);
+  while(temp.previous) {
+    path.push(temp.previous);
+    temp = temp.previous;
+  }
 
-
-  for(var i=0; i<pathfinder.openSet.length; i++) {
-    pathfinder.openSet[i].show(color(0, 255, 0));
+  for(var i=0; i<openSet.length; i++) {
+    openSet[i].show(color(0, 255, 0));
   }
 
   for(var i=0; i<path.length; i++) {
