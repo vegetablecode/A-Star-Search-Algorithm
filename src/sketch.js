@@ -1,107 +1,105 @@
+// settings
+var fpsNumber = 5;
+var cols = 15;
+var rows = 15;
+var startX = 0;
+var startY = 0;
+var endX = cols - 1;
+var endY = rows - 1;
+
+// create the grid
+var grid = new Array(cols);
+
 // simulation speed
 var lastLoop = new Date;
 var count = 0;
 var i = 0;
 
-var cols = 15;
-var rows = 15;
-var grid = new Array(cols);
-
-
-var start;
-var end;
-var w, h;
-var path = [];
-
-
-
 
 function setup() {
-  frameRate(1);
-  createCanvas(400, 400);
-  console.log('A*');
 
-  w = width/cols;
-  h = height/rows;
+  // canvas setup
+  frameRate(fpsNumber);
+  createCanvas(400, 400);
+  width = width / cols;
+  height = height / rows;
 
   // create a 2D array
-  for(var i=0; i<cols; i++) {
+  for (var i = 0; i < cols; i++) {
     grid[i] = new Array(rows);
   }
 
   // for each element create a spot
-  for(var i=0; i<cols; i++) {
-    for(var j=0; j<rows; j++) {
-      grid[i][j] = new Spot(i, j, w, h, grid);
+  for (var i = 0; i < cols; i++) {
+    for (var j = 0; j < rows; j++) {
+      grid[i][j] = new Spot(i, j, width, height, grid);
     }
   }
 
-  for(var i=0; i<cols; i++) {
-    for(var j=0; j<rows; j++) {
+  // for each spot, add the neighbours
+  for (var i = 0; i < cols; i++) {
+    for (var j = 0; j < rows; j++) {
       grid[i][j].addNeighbours(grid);
     }
   }
 
-  start = grid[0][0];
-  //end = grid [15][7];
-  end = grid[cols-1][rows-1];
+  // start & end point
+  start = grid[startX][startY];
+  end = grid[endX][endY];
 
+  // create a new pathfinder
   pathfinder = new AStarAlgorithm(start, end);
-  var openSet = pathfinder.openSet;
-  var closedSet = pathfinder.closedSet;
-  var current = pathfinder.current;
 
-}
-
-function calcPath(endNode) {
-    // Find the path by working backwards
-    path = [];
-    var temp = endNode;
-    path.push(temp);
-    while (temp.previous) {
-        path.push(temp.previous);
-        temp = temp.previous;
-    }
-    return path
 }
 
 function draw() {
 
   // simulation speed
   var thisLoop = new Date;
-  var fps = 1000/(thisLoop - lastLoop);
+  var fps = 1000 / (thisLoop - lastLoop);
   lastLoop = thisLoop;
   ++i;
-  count+=fps;
-  // ----------------------
+  count += fps;
 
+  // make a pathfinder step
   pathfinder.step();
 
+  // set the background color
   background(0);
 
-  for(var i=0; i<cols; i++) {
-    for(var j=0; j<rows; j++) {
+  // display the grid
+  for (var i = 0; i < cols; i++) {
+    for (var j = 0; j < rows; j++) {
       grid[i][j].show(color(255));
     }
   }
 
-  // discovered nodes -> green
-  // evaluated nodes -> red
-  // path -> blue
-  for(var i=0; i<pathfinder.closedSet.length; i++) {
-    pathfinder.closedSet[i].show(color(255, 0, 0));
-  }
-
-  // find the path
-  var path = calcPath(pathfinder.lastCheckedNode);
-
-
-  for(var i=0; i<pathfinder.openSet.length; i++) {
+  // display discovered nodes (green)
+  for (var i = 0; i < pathfinder.openSet.length; i++) {
     pathfinder.openSet[i].show(color(0, 255, 0));
   }
 
-  for(var i=0; i<path.length; i++) {
+  // display evaluated nodes (red)
+  for (var i = 0; i < pathfinder.closedSet.length; i++) {
+    pathfinder.closedSet[i].show(color(255, 0, 0));
+  }
+
+  // display the path
+  var path = getPath(pathfinder.lastCheckedNode);
+  for (var i = 0; i < path.length; i++) {
     path[i].show(color(0, 0, 255));
   }
 
+}
+
+function getPath(endNode) {
+  // find the path by walking backwards
+  path = [];
+  var temp = endNode;
+  path.push(temp);
+  while (temp.previous) {
+    path.push(temp.previous);
+    temp = temp.previous;
+  }
+  return path
 }
