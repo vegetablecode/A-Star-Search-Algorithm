@@ -228,7 +228,7 @@ function applySetup() {
   // king position
   var value = parseInt(kingXInput.value());
   if (value > 0 && value < cols) {
-    startX = value;
+    endY = value;
   }
   var value = parseInt(kingYInput.value());
   if (value > 0 && value < rows) {
