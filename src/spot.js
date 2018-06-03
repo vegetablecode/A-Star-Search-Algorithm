@@ -1,4 +1,4 @@
-function Spot(i, j, width, height, grid) {
+function Spot(i, j, width, height, grid, isWall, randomObstacles) {
 
   // position
   this.i = i;
@@ -21,8 +21,15 @@ function Spot(i, j, width, height, grid) {
   this.wall = false;
 
   // create a wall
-  if (random(1) < 0.1) {
+  if (isWall == 1 || isWall == 2) {
     this.wall = true;
+  }
+
+  // create random random obstacles
+  if (randomObstacles == true) {
+    if (random(1) < 0.1) {
+      this.wall = true;
+    }
   }
 
   // find the spot's neighbours
@@ -69,12 +76,30 @@ function Spot(i, j, width, height, grid) {
     fill(color);
     noStroke();
 
-    // walls are black
+    // walls are light-grey
     if (this.wall) {
-      fill(0);
+      fill(192, 192, 192);
     }
 
     // draw rectangle
     rect(this.i * this.width, this.j * this.height, this.width - 1, this.height - 1);
+
+    // king is a orange dot
+    if (isWall == 3) {
+      fill(257, 157, 0);
+      ellipse(this.i * this.width+ this.width/2, this.j * this.height+this.height/2, this.width/2, this.height/2);
+    }
+
+    // tower is a dark-grey dot
+    if (isWall == 2) {
+      fill(58, 58, 58);
+      ellipse(this.i * this.width+ this.width/2, this.j * this.height+this.height/2, this.width/2, this.height/2);
+    }
+
+    // player is a pink dot
+    if (isWall == 4) {
+      fill(255, 0, 255);
+      ellipse(this.i * this.width+ this.width/2, this.j * this.height+this.height/2, this.width/2, this.height/2);
+    }
   }
 }
