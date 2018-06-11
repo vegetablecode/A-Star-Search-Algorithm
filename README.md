@@ -5,6 +5,7 @@ This is an implementation of A* Search Algorithm. Basically, it was created to s
 
 ### Chess Problem
 ![Chess Problem](/screenshots/1.png)
+
 The aim of this app is to find the shortest path from the starting point (knight) to the ending point (king). What's more, you can't move into a field with the tower or any field in the same row or column. You are the knight, so you are only allowed to make following moves:
 - 1 right, 2 up
 - 2 right, 1 up
