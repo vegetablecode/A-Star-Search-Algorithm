@@ -24,6 +24,8 @@ There's the solution of this problem:
 - orange dot - king
 - black dot - tower
 - grey fields - obstacles
+- green fields - discovered neighbours
+- red fields - evaluated neighbours
 
 protip: to turn on random obstacles, just type in console: "obstacles = true"
 
