@@ -27,6 +27,7 @@ There's the solution of this problem:
 - grey fields - obstacles
 - green fields - discovered neighbours
 - red fields - evaluated neighbours
+- blue fields - path
 
 protip: to turn on random obstacles, just type in console: "obstacles = true"
 
