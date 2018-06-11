@@ -12,7 +12,7 @@ The aim of this app is to find the shortest path from the starting point (knight
 - 1 right, 2 down
 - 1 left, 2 down
 - 2 left, 1 down
-- 2 lewt, 1 up
+- 2 left, 1 up
 - 1 left, 2 up
 
 There's the solution of this problem:
